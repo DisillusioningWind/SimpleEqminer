@@ -44,11 +44,11 @@ private:
     QString InputDirName;
     QString InputFileData;
     QStringList SubDirPath;
-    int TestNum = 1;
+    int TestNum = 10;
     //change every sub dir
     QString CurSubDirPath;
     QString CurSubDirName;
-    int CurSubDirIndex = 1;
+    int CurSubDirIndex = 0;
     QString CurSubForPath;
     QStringList InputFormatStr;
     QStringList FileList;
@@ -73,6 +73,7 @@ public slots:
     JInfo testSubDir(QString subDirPathAbs);
     JInfo generateTestFile(QString filePathAbs);
     JInfo runTestFile(QString filePathAbs, QString randomInputFilePathAbs);
+    JInfo compareTestOutput(QString subDirPathAbs);
     JInfo writeResult();
 };
 

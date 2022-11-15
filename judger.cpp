@@ -12,7 +12,7 @@ void Judger::runJudger(QString inputDirPath)
     printJudgeInfo(inf);
     inf = setSubDirPath();
     printJudgeInfo(inf);
-    for (CurSubDirIndex = 1; CurSubDirIndex < SubDirPath.size(); CurSubDirIndex++)
+    for (CurSubDirIndex = 0; CurSubDirIndex < SubDirPath.size(); CurSubDirIndex++)
     {
         CurSubDirName = SubDirPath[CurSubDirIndex];
         inf = readFormatFileData(SubDirPath[CurSubDirIndex]);
@@ -173,38 +173,14 @@ Judger::JInfo Judger::testSubDir(QString subDirPathAbs)
     for (int i = 0; i < TestNum; i++)
     {
         QString randomInputFilePathAbs = d.filePath(RandomFileNamePrefix + QString::number(i) + ".txt");
-        for (int j = 0; j < fileList.size(); j++)
+        for (int j = 0; j < FileList.size(); j++)
         {
-            QString testFilePathAbs = d.filePath(fileList[j]);
+            QString testFilePathAbs = d.filePath(FileList[j]);
             JInfo inf = runTestFile(testFilePathAbs, randomInputFilePathAbs);
             printJudgeInfo(inf);
         }
-        for (int a = 0; a < FileList.size() - 1; a++)
-        {
-            for (int b = a + 1; b < FileList.size(); b++)
-            {
-                QString output1 = FileList[a].left(FileList[a].lastIndexOf(".")) + ".txt";
-                QString output2 = FileList[b].left(FileList[b].lastIndexOf(".")) + ".txt";
-                QString path1 = d.filePath(output1);
-                QString path2 = d.filePath(output2);
-                QFile file1(path1);
-                QFile file2(path2);
-                if(file1.exists() && file2.exists())
-                {
-                    file1.open(QIODevice::Text | QIODevice::ReadOnly);
-                    file2.open(QIODevice::Text | QIODevice::ReadOnly);
-                    QString str1 = file1.readAll();
-                    QString str2 = file2.readAll();
-                    if(str1 != str2)
-                    {
-                        InequalFileList[FileList[a]].append(FileList[b]);
-                        InequalFileList[FileList[b]].append(FileList[a]);
-                    }
-                    file1.close();
-                    file2.close();
-                }
-            }
-        }
+        JInfo inf = compareTestOutput(subDirPathAbs);
+        printJudgeInfo(inf);
     }
 
     JInfo inf = writeResult();
@@ -247,6 +223,37 @@ Judger::JInfo Judger::runTestFile(QString filePathAbs, QString randomInputFilePa
         return JInfo::TestFileRuntimeError;
     }
     return JInfo::TestFileResultGenerated;
+}
+Judger::JInfo Judger::compareTestOutput(QString subDirPathAbs)
+{
+    QDir d(subDirPathAbs);
+    for (int a = 0; a < FileList.size() - 1; a++)
+    {
+        for (int b = a + 1; b < FileList.size(); b++)
+        {
+            QString output1 = FileList[a].left(FileList[a].lastIndexOf(".")) + ".txt";
+            QString output2 = FileList[b].left(FileList[b].lastIndexOf(".")) + ".txt";
+            QString path1 = d.filePath(output1);
+            QString path2 = d.filePath(output2);
+            QFile file1(path1);
+            QFile file2(path2);
+            if(file1.exists() && file2.exists())
+            {
+                file1.open(QIODevice::Text | QIODevice::ReadOnly);
+                file2.open(QIODevice::Text | QIODevice::ReadOnly);
+                QString str1 = file1.readAll();
+                QString str2 = file2.readAll();
+                if(str1 != str2)
+                {
+                    InequalFileList[FileList[a]].append(FileList[b]);
+                    InequalFileList[FileList[b]].append(FileList[a]);
+                }
+                file1.close();
+                file2.close();
+            }
+        }
+    }
+    return JInfo::NoOutputInfo;
 }
 Judger::JInfo Judger::writeResult()
 {
