@@ -17,10 +17,10 @@ void Judger::runJudger(QString inputDirPath)
         CurSubDirName = SubDirPath[CurSubDirIndex];
         inf = readFormatFileData(SubDirPath[CurSubDirIndex]);
         printJudgeInfo(inf);
-        //inf = writeRandomTestFileData(CurSubDirPath);
-        //printJudgeInfo(inf);
+        inf = writeRandomTestFileData(CurSubDirPath);
+        printJudgeInfo(inf);
         inf = testSubDir(CurSubDirPath);
-        //printJudgeInfo(inf);
+        printJudgeInfo(inf);
     }
 }
 void Judger::printJudgeInfo(JInfo inf)
@@ -166,8 +166,8 @@ Judger::JInfo Judger::testSubDir(QString subDirPathAbs)
     for (int i = 0; i < fileList.size(); i++)
     {
         QString filePathAbs = d.filePath(fileList[i]);
-        //JInfo inf = generateTestFile(filePathAbs);
-        //printJudgeInfo(inf);
+        JInfo inf = generateTestFile(filePathAbs);
+        printJudgeInfo(inf);
     }
 
     for (int i = 0; i < TestNum; i++)
@@ -176,8 +176,8 @@ Judger::JInfo Judger::testSubDir(QString subDirPathAbs)
         for (int j = 0; j < fileList.size(); j++)
         {
             QString testFilePathAbs = d.filePath(fileList[j]);
-            //JInfo inf = runTestFile(testFilePathAbs, randomInputFilePathAbs);
-            //printJudgeInfo(inf);
+            JInfo inf = runTestFile(testFilePathAbs, randomInputFilePathAbs);
+            printJudgeInfo(inf);
         }
         for (int a = 0; a < FileList.size() - 1; a++)
         {
