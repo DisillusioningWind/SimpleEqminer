@@ -75,6 +75,7 @@ public slots:
     JInfo runTestFile(QString filePathAbs, QString randomInputFilePathAbs);
     JInfo compareTestOutput(QString subDirPathAbs);
     JInfo writeResult();
+    JInfo generateResultFile();
 };
 
 #endif // JUDGER_H

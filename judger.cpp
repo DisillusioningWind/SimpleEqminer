@@ -7,7 +7,9 @@ Judger::Judger(QObject *parent) : QObject(parent)
 
 void Judger::runJudger(QString inputDirPath)
 {
-    JInfo inf;
+    JInfo inf = JInfo::NoOutputInfo;
+    inf = generateResultFile();
+    printJudgeInfo(inf);
     inf = setInputDirPath(inputDirPath);
     printJudgeInfo(inf);
     inf = setSubDirPath();
@@ -257,20 +259,16 @@ Judger::JInfo Judger::compareTestOutput(QString subDirPathAbs)
 }
 Judger::JInfo Judger::writeResult()
 {
-    QDir d;
-    d.mkdir(OutputDirName);
     QString curPath = QDir::currentPath();
     QString prefix = InputDirName + "/" + CurSubDirName + "/";
     QString equalFilePath = curPath + "/" + OutputDirName + "/" + OutputEqualFileName;
     QString inEqualFilePath = curPath + "/" + OutputDirName + "/" + OutputInequalFileName;
     QFile eq(equalFilePath);
     QFile ineq(inEqualFilePath);
-    eq.open(QIODevice::WriteOnly | QIODevice::Truncate);
-    ineq.open(QIODevice::WriteOnly | QIODevice::Truncate);
+    eq.open(QIODevice::WriteOnly | QIODevice::Append);
+    ineq.open(QIODevice::WriteOnly | QIODevice::Append);
     QTextStream steq(&eq);
     QTextStream stineq(&ineq);
-    steq<<"file1,file2\n";
-    stineq<<"file1,file2\n";
     for (int a = 0; a < FileList.size() - 1; a++)
     {
         for (int b = a + 1; b < FileList.size(); b++)
@@ -287,6 +285,25 @@ Judger::JInfo Judger::writeResult()
             }
         }
     }
+    eq.close();
+    ineq.close();
+    return JInfo::NoOutputInfo;
+}
+Judger::JInfo Judger::generateResultFile()
+{
+    QDir d;
+    d.mkdir(OutputDirName);
+    QString curPath = QDir::currentPath();
+    QString equalFilePath = curPath + "/" + OutputDirName + "/" + OutputEqualFileName;
+    QString inEqualFilePath = curPath + "/" + OutputDirName + "/" + OutputInequalFileName;
+    QFile eq(equalFilePath);
+    QFile ineq(inEqualFilePath);
+    eq.open(QIODevice::WriteOnly | QIODevice::Append);
+    ineq.open(QIODevice::WriteOnly | QIODevice::Append);
+    QTextStream steq(&eq);
+    QTextStream stineq(&ineq);
+    steq<<"file1,file2\n";
+    stineq<<"file1,file2\n";
     eq.close();
     ineq.close();
     return JInfo::NoOutputInfo;
