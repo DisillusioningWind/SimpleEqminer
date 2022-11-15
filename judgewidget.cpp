@@ -48,9 +48,10 @@ void JudgeWidget::iniUI()
     //window setting
     qInstallMessageHandler(logOutput);
     setAcceptDrops(true);
-    this->resize(900,500);
+    this->resize(1200,700);
     //widget
-    edInput = new QTextEdit("/home/whr/Projects/input");
+    QString testInputPath = "/home/whr/Projects/input";
+    edInput = new QTextEdit();
     brInput = new QTextBrowser();
     btnInput = new QPushButton("Start judging");
     //widget setting
