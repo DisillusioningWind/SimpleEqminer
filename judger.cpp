@@ -298,8 +298,8 @@ Judger::JInfo Judger::generateResultFile()
     QString inEqualFilePath = curPath + "/" + OutputDirName + "/" + OutputInequalFileName;
     QFile eq(equalFilePath);
     QFile ineq(inEqualFilePath);
-    eq.open(QIODevice::WriteOnly | QIODevice::Append);
-    ineq.open(QIODevice::WriteOnly | QIODevice::Append);
+    eq.open(QIODevice::WriteOnly | QIODevice::Truncate);
+    ineq.open(QIODevice::WriteOnly | QIODevice::Truncate);
     QTextStream steq(&eq);
     QTextStream stineq(&ineq);
     steq<<"file1,file2\n";
